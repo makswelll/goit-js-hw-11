@@ -31,7 +31,6 @@ async function fetchImages(query, page) {
 function updateGallery(images) {
   const gallery = selectors.galleryEl;
   const cards = images.hits.map(image => createImageCard(image));
-  gallery.innerHTML = '';
   gallery.insertAdjacentHTML('beforeend', cards.join(''));
 
   if (images.totalHits === 0) {
@@ -45,7 +44,7 @@ function updateGallery(images) {
   lightbox.refresh();
 }
 
-//----- РЕНДЕР----------------------
+//--------------------------
 
 function createImageCard(image) {
   const {
@@ -61,7 +60,7 @@ function createImageCard(image) {
   return `
     <div class="photo-card">
       <a href="${largeImageURL}" target="_blank">
-        <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+        <img src="${webformatURL}" alt="${tags}" loading="lazy" style="width: 100%; height: 300px;" />
       </a>
       <div class="info">
         <p class="info-item">
@@ -80,7 +79,7 @@ function createImageCard(image) {
     </div>`;
 }
 
-// ---------- НОВА СТОРІНКА КАРТИНОК---------------
+// -------------------------
 
 async function loadMoreImages() {
   currentPage += 1;
@@ -96,7 +95,7 @@ async function loadMoreImages() {
   }
 }
 
-//---------- ПЛАВНИЙ СКРОЛ---------------
+//-------------------------
 
 function smoothScrollToGallery() {
   const gallery = selectors.galleryEl;
@@ -111,11 +110,14 @@ function smoothScrollToGallery() {
   }
 }
 
+// -----------------------------------
+
 selectors.formEl.addEventListener('submit', async event => {
   event.preventDefault();
   currentPage = 1;
   currentQuery = event.target.searchQuery.value;
   selectors.loadMoreBtn.style.display = 'none';
+  selectors.galleryEl.innerHTML = '';
   const data = await fetchImages(currentQuery, currentPage);
   updateGallery(data);
   if (data.hits.length > 0) {
